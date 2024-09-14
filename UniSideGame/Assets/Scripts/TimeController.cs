@@ -28,7 +28,6 @@ public class TimeController : MonoBehaviour
         if (isTimerStopped) return;
 
         elapsedTime += Time.deltaTime;
-        Debug.Log("elapsedTime: " + elapsedTime + "displayTime: " + displayTime);
 
         if (isCountDown)
         {

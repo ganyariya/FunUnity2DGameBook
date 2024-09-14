@@ -27,6 +27,8 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public static string gameState = GameState.Playing;
 
+    private int totalScore = 0;
+
 
     void Start()
     {
@@ -86,6 +88,11 @@ public class PlayerController : MonoBehaviour
         {
             GameOver();
         }
+        else if (collision.gameObject.tag == "ScoreItem")
+        {
+            ItemData itemData = collision.gameObject.GetComponent<ItemData>();
+            AcquireScore(itemData);
+        }
     }
 
     private void UpdateAnimation(bool onGround)
@@ -126,5 +133,11 @@ public class PlayerController : MonoBehaviour
     private void GameStop()
     {
         rBody.velocity = Vector2.zero;
+    }
+
+    private void AcquireScore(ItemData itemData)
+    {
+        totalScore += itemData.GetValue();
+        itemData.DestroyObject();
     }
 }
