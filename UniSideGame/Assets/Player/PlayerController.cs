@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
         GameStop();
     }
 
-    private void GameOver()
+    public void GameOver()
     {
         animator.Play(PlayerAnimationCategory.PlayerGameOver);
         gameState = GameState.GameOver;
