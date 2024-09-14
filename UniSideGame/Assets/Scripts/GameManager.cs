@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    private const int REMAIN_TIME_COEFFICIENT = 10;
+
     public GameObject mainImage;
 
     public Sprite gameOverSprite;
@@ -28,8 +31,21 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private TimeController timeController;
 
+    /// <summary>
+    /// ゲーム全体で共通している合計スコア」
+    /// 
+    /// </summary>
+    public static int gameTotalScore = 0;
+
+    private PlayerController playerController;
+
+    [SerializeField]
+    private Text scoreText;
+
     void Awake()
     {
+        var player = GameObject.FindGameObjectWithTag("Player");
+        playerController = player.GetComponent<PlayerController>();
     }
 
 
@@ -53,6 +69,9 @@ public class GameManager : MonoBehaviour
             mainImage.GetComponent<Image>().sprite = gameClearSprite; // ゲームクリアスプライトを設定する
             PlayerController.gameState = GameState.GameEnd;
             timeController.StopTimer();
+
+            int remainTime = (int)timeController.getDisplayTime();
+            UpdateGameScore(remainTime);
         }
 
         if (PlayerController.gameState == GameState.GameOver)
@@ -70,9 +89,6 @@ public class GameManager : MonoBehaviour
             if (timeController == null) return;
             if (timeController.getMaxTimeLimit() == 0f) return;
 
-            var player = GameObject.FindGameObjectWithTag("Player");
-            PlayerController playerController = player.GetComponent<PlayerController>();
-
             var displayTime = (int)timeController.getDisplayTime();
             timeText.text = displayTime.ToString();
             if (displayTime == 0)
@@ -80,10 +96,25 @@ public class GameManager : MonoBehaviour
                 playerController.GameOver();
             }
         }
+
+        UpdateScoreText();
     }
 
     void InactiveImage()
     {
         mainImage.SetActive(false);
+    }
+
+    void UpdateScoreText()
+    {
+        var score = gameTotalScore + playerController.GetTotalScore();
+        scoreText.text = score.ToString();
+    }
+
+    void UpdateGameScore(int remainTime)
+    {
+        gameTotalScore += REMAIN_TIME_COEFFICIENT * remainTime;
+        gameTotalScore += playerController.GetTotalScore();
+        playerController.ResetTotalScore();
     }
 }

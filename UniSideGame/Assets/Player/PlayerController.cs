@@ -140,4 +140,14 @@ public class PlayerController : MonoBehaviour
         totalScore += itemData.GetValue();
         itemData.DestroyObject();
     }
+
+    public int GetTotalScore()
+    {
+        return totalScore;
+    }
+
+    public void ResetTotalScore()
+    {
+        totalScore = 0;
+    }
 }
